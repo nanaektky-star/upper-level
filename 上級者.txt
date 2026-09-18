@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>闇夜の終電脱出劇〜ブルーライン編〜</title>
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #161f30;
+      --accent-blue: #0072ce;
+      --accent-glow: #00a3ff;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --correct: #10b981;
+      --incorrect: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 15px rgba(0, 114, 206, 0.2);
+      border: 1px solid rgba(0, 114, 206, 0.3);
+      padding: 30px;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px var(--accent-glow);
+      line-height: 1.4;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--accent-glow);
+      border-bottom: 2px solid var(--accent-blue);
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: var(--text-main);
+      border: 1px solid var(--accent-blue);
+      padding: 16px 24px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn:hover {
+      background: var(--accent-blue);
+      color: #fff;
+      box-shadow: 0 0 15px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--text-muted);
+      color: var(--text-muted);
+      margin-top: 25px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      width: 100%;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .question-block {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--accent-blue);
+    }
+
+    .question-title {
+      font-size: 1.05rem;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background-color: #0f172a;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent-glow);
+      box-shadow: 0 0 5px var(--accent-glow);
+    }
+
+    .submit-btn {
+      padding: 12px 20px;
+      background-color: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--accent-glow);
+    }
+
+    .result-msg {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      min-height: 24px;
+    }
+
+    .result-msg.correct {
+      color: var(--correct);
+    }
+
+    .result-msg.incorrect {
+      color: var(--incorrect);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- タイトル画面 -->
+    <div id="screen-home" class="screen active">
+      <h1>闇夜の終電脱出劇<br>〜ブルーライン編〜</h1>
+      <div class="btn-container">
+        <button class="btn" onclick="showScreen('screen-m1')">ミッション壱</button>
+        <button class="btn" onclick="showScreen('screen-m2')">ミッション弐</button>
+      </div>
+    </div>
+
+    <!-- ミッション壱 画面 -->
+    <div id="screen-m1" class="screen">
+      <h2>路線図から暗号を読み取れ</h2>
+
+      <!-- Q1 -->
+      <div class="question-block">
+        <div class="question-title">
+          Q1: 線を左からたどって示している数字を探れ(線1本で数字1文字を表す)
+        </div>
+        <div class="input-group">
+          <input type="text" id="q1-input" placeholder="解答">
+          <button class="submit-btn" onclick="checkQ1()">送信</button>
+        </div>
+        <div id="q1-result" class="result-msg"></div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="question-block">
+        <div class="question-title">
+          Q2: ？に入る図形を見つけてそれを文字で示せ(どの図形がどの文字かはどこかに書いてある)
+        </div>
+        <div class="input-group">
+          <input type="text" id="q2-input" placeholder="解答">
+          <button class="submit-btn" onclick="checkQ2()">送信</button>
+        </div>
+        <div id="q2-result" class="result-msg"></div>
+      </div>
+
+      <button class="btn btn-back" onclick="showScreen('screen-home')">タイトルへ戻る</button>
+    </div>
+
+    <!-- ミッション弐 画面 -->
+    <div id="screen-m2" class="screen">
+      <h2>乗客に話しかけてみよう</h2>
+
+      <div class="question-block">
+        <div class="input-group">
+          <input type="text" id="m2-input" placeholder="解答">
+          <button class="submit-btn" onclick="checkM2()">送信</button>
+        </div>
+        <div id="m2-result" class="result-msg"></div>
+      </div>
+
+      <button class="btn btn-back" onclick="showScreen('screen-home')">タイトルへ戻る</button>
+    </div>
+  </div>
+
+  <script>
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function checkQ1() {
+      const val = document.getElementById('q1-input').value.trim();
+      const res = document.getElementById('q1-result');
+      if (val === '7521438') {
+        res.textContent = '正解！';
+        res.className = 'result-msg correct';
+      } else {
+        res.textContent = '不正解';
+        res.className = 'result-msg incorrect';
+      }
+    }
+
+    function checkQ2() {
+      const val = document.getElementById('q2-input').value.trim();
+      const res = document.getElementById('q2-result');
+      if (val.toUpperCase() === 'XYZCB') {
+        res.textContent = '正解！';
+        res.className = 'result-msg correct';
+      } else {
+        res.textContent = '不正解';
+        res.className = 'result-msg incorrect';
+      }
+    }
+
+    function checkM2() {
+      const val = document.getElementById('m2-input').value.trim();
+      const res = document.getElementById('m2-result');
+      if (val === '198754') {
+        res.textContent = '正解！';
+        res.className = 'result-msg correct';
+      } else {
+        res.textContent = '不正解';
+        res.className = 'result-msg incorrect';
+      }
+    }
+  </script>
+</body>
+</html>
